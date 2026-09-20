@@ -86,3 +86,20 @@ STM32F103C8T6 直流电机调速 + 蓝牙遥控工作区，基于江协科技《
 - 人眼看到"电机停住"再按键会晚 1~2%，故余量必须 ≥3%；低区间必须用 1% 小步长（当前 45% 以上每步 5%/停 800ms，45% 以下每步 1%/停 900ms，最低 13%）。
 - 上位机 BLE 链路：连接建立需 12~15 秒（Windows 等外设广播，实测 14.6~14.9s），故 `BleakClient` 超时设 30 秒；往返约 130ms。
 - 工作区根目录目前**文件未归类**（手册、日志、编辑器缓存与源码混放），待用户确认整理范围后再动。
+
+## 仓库与远端约定（2026-09-20 建立）
+- 远端仓库：**https://github.com/zby-dsb/stm32-motor-ble-control**（**公开**，默认分支 `main`）。
+- 本地仓库：工作区根目录已 `git init -b main`，`core.autocrlf false`（保 GBK 源码字节），
+  user/email = `zby-dsb` / `zby-dsb@users.noreply.github.com`。
+- **`.gitignore` 排除**：`Objects/` `Listings/` `*.o` `*.d` `*.crf` `*.axf` `*.map` `*.lst` `*.lnp` `*.dep`
+  `*.htm` `*.uvguix.*` `build_log.txt` `tmp/` `.workbuddy/`。→ **提交内只有源码/工程/工具/文档**。
+- **⚠️ 本机 `github.com:443` TCP 不可达**（`api.github.com` 正常）→ `git push/pull/fetch` 全部不可用，
+  **更新仓库只能走 REST API 直写**：用技能 `github-push-local-project/` 里的
+  `push_commit.py`（增量追加）/ `push_api.py`（首次建仓）/ `align_to_remote.py`（sha 分叉补救）。
+  每次动手前先按技能第 1 节重新探测连通性，**别信历史结论**。
+- **远端 commit 与本地逐字节一致的唯一正确做法**：message **原样**传（含末尾换行，不增不减）+
+  author/committer 用「同一时刻 + 原时区偏移 `+0800`」。API 返回的 `author.date` 会显示成 UTC 的 `Z`，
+  **那是显示、不是存储** —— 照它把偏移改成 `+0000` 一定对不上。
+- 令牌（PAT）**只在命令里用一次**，用完必须去 https://github.com/settings/tokens 撤销；
+  不许写进任何文件、不许留在 remote URL 里（remote 已确认为无令牌的干净 URL）。
+- 网络恢复后本地可正常 `git fetch/pull/push`，届时无需再做 sha 对齐。

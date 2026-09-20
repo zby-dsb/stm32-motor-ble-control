@@ -34,5 +34,6 @@
 | 低 | 高 | **裸** HC-05 模块接 5V 会烧毁（本机是带底板模块，`POWER 3.6-5V`，接 5V 才对） | 按底板丝印 POWER 范围供电；判据优先级：底板丝印 > 有无三脚稳压芯片 > 万用表实测 |
 | 低 | 中 | 清理编译产物后用 `keilkill.bat` 顺手删到源码或 `Project.uvoptx`（该脚本按通配符递归删 `.lst/.o/.d/.axf/.map` 等） | 清理前先确认范围、必要时先备份；不要在有未保存源码改动时执行 |
 | 中 | 中 | 上位机 BLE 连接需 12~15 秒，期间用户重复点击会产生并发扫描/连接请求，进一步污染 WinRT 栈 | 保持扫描/连接按钮互斥 + UI 实时秒数提示"别重复点" + 按地址直连优先（不扫描） |
-| 高 | 中 | **本机 `github.com:443` TCP 层不可达**（2026-09-20 实测，`api.github.com` 正常）→ `git push/pull/fetch` 全部不可用，只能走 REST API 直写；且本地与远端**没有 git 通道**，本地 ref 无法靠 fetch 对齐 | 用技能 `github-push-local-project/push_api.py`（逐 sha 校验 + 无父提交，保远端与本地 commit sha 一致）；每次动手续探连通性，别信历史结论 |
-| 中 | 中 | 仓库为**公开**且包含 `用户手册.pdf`（Word 导出，疑为江协科技/第三方资料），存在版权与个人痕迹暴露风险 | 已向用户提示并获确认；若后续收到异议，`git rm --cached` 后重推即可移除 |
+| 高 | 中 | **本机 `github.com:443` TCP 层不可达**（2026-09-20 实测，`api.github.com` 正常）→ `git push/pull/fetch` 全部不可用，只能走 REST API 直写；本地与远端**没有 git 通道**，本地 ref 无法靠 fetch 对齐 | 已有可用方案并验证通过：技能 `github-push-local-project/` 下 `push_api.py`（首次建仓）/ `push_commit.py`（增量追加）/ `align_to_remote.py`（sha 补救）。**每次动手续探连通性**（判据是 TCP 能否建连，不是 HTTP 状态码），别信历史结论 |
+| 中 | 中 | 仓库为**公开**且包含 `用户手册.pdf`（Word 导出，疑为江协科技/第三方资料），存在版权与个人痕迹暴露风险 | **用户已明确确认照传**，现已上线；若后续收到异议，`git rm --cached "用户手册.pdf"` 后用 `push_commit.py` 重推即可移除 |
+| 中 | 中 | 用 REST API 建提交时，若 message 或时区处理不当，远端 commit sha 会与本地不同 → 本地 ref 与远端分叉，后续同步需额外对齐 | 已固化为规则并写入 context.md：**message 原样传（含末尾换行）+ 原时区偏移 `+0800`**；API 返回的 `date` 显示为 UTC `Z` 属显示层，**不要**照它改成 `+0000`。对不上就跑 `align_to_remote.py` |
