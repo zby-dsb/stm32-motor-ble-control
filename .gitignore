@@ -1,0 +1,27 @@
+# ---- Keil 编译产物（可由 Keil 重新生成，不入库）----
+Objects/
+Listings/
+*.o
+*.d
+*.crf
+*.axf
+*.map
+*.lst
+*.lnp
+*.dep
+*.iex
+*.sct
+*.build_log.htm
+*.htm
+
+# ---- 编辑器缓存与编译日志（含本机用户名等个人痕迹）----
+*.uvguix.*
+build_log.txt
+*.bak
+*.tmp
+
+# ---- 会话临时文件 ----
+tmp/
+
+# ---- WorkBuddy 工具目录（非项目内容）----
+.workbuddy/
